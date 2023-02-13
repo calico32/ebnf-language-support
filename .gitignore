@@ -1,0 +1,13 @@
+node_modules
+out
+
+.yarn/*
+!.yarn/releases
+!.yarn/plugins
+
+*.vsix
+script.js
+
+yarn-error.log
+
+syntaxes/*.json

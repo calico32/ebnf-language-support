@@ -1,0 +1,14 @@
+.vscode/**
+.vscode-test/**
+.gitignore
+language
+yarn-error.log
+tsconfig.json
+scripts
+extension
+.yarnrc*
+.vscodeignore
+.yarn
+script.js
+**/*.YAML-tmLanguage
+*.ebnf

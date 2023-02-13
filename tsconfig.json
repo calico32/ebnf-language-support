@@ -1,0 +1,13 @@
+{
+  "compilerOptions": {
+    "target": "esnext",
+    "module": "esnext",
+    "strict": true,
+    "experimentalDecorators": true,
+    "skipLibCheck": true,
+    "moduleResolution": "nodenext",
+    "lib": ["esnext"],
+    "allowSyntheticDefaultImports": true,
+    "esModuleInterop": true
+  }
+}

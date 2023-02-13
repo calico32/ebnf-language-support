@@ -1,0 +1,88 @@
+name: Extended Backus-Naur Form
+scopeName: source.ebnf
+
+patterns:
+  - include: '#source'
+
+repository:
+  source:
+    patterns:
+      - include: '#comment'
+      - include: '#rule'
+
+  comment:
+    name: comment.block.ebnf
+    begin: \(\*
+    end: \*\)
+
+  rule:
+    name: meta.rule.ebnf
+    begin: ^([A-Za-z0-9_ -]+)\s*(=)
+    beginCaptures:
+      1: { name: entity.name.class.ebnf }
+      2: { name: keyword.operator.assignment.ebnf }
+    end: (?=;)
+    patterns:
+      - include: '#comment'
+      - include: '#expression'
+
+  expression:
+    name: meta.expression.ebnf
+    patterns:
+      - include: '#comment'
+      - include: '#group'
+      - include: '#operator'
+      - include: '#optional'
+      - include: '#repetition'
+      - include: '#terminal'
+      - include: '#special'
+      - include: '#reference'
+
+  group:
+    name: meta.group.ebnf
+    begin: \(
+    end: \)
+    patterns:
+      - include: '#expression'
+
+  optional:
+    name: meta.optional.ebnf
+    begin: \[
+    end: \]
+    patterns:
+      - include: '#expression'
+
+  repetition:
+    name: meta.repetition.ebnf
+    begin: \{
+    end: \}
+    patterns:
+      - include: '#expression'
+
+  terminal:
+    name: meta.terminal.ebnf
+    patterns:
+      - name: string.quoted.double.ebnf
+        match: '"[^"]*"'
+      - name: string.quoted.single.ebnf
+        match: "'[^']*'"
+
+  operator:
+    name: keyword.operator.ebnf
+    match: \||\+|\*|\,|\-|\.\.
+
+  special:
+    name: meta.special.ebnf
+    begin: \?
+    beginCaptures:
+      0: { name: constant.character.ebnf }
+    end: \?
+    endCaptures:
+      0: { name: constant.character.ebnf }
+    contentName: constant.character.ebnf
+
+  reference:
+    name: meta.reference.ebnf
+    match: ([A-Za-z0-9_][A-Za-z0-9_ -]*)
+    captures:
+      1: { name: entity.name.function.ebnf }

@@ -1,0 +1,72 @@
+{
+  "name": "ebnf-language-support",
+  "displayName": "EBNF Language Support",
+  "publisher": "devdoge1",
+  "description": "",
+  "version": "1.0.0",
+  "engines": {
+    "vscode": "^1.75.0"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/wiisportsresort/ebnf-language-support"
+  },
+  "scripts": {
+    "generate": "yq syntaxes/ebnf.YAML-tmLanguage -o=json -P > syntaxes/ebnf.tmLanguage.json",
+    "watch": "watchexec -w syntaxes -e YAML-tmLanguage -r \"yarn run generate\"",
+    "build": "vsce package",
+    "vscode:prepublish": "yarn run generate && yarn run compile",
+    "build-script": "esbuild --bundle --platform=node --format=esm --target=es2022 --sourcemap=inline --outfile=script.mjs",
+    "script": "yarn build-script $0 2>/dev/null && node --enable-source-maps script.mjs $*",
+    "compile": "esbuild --bundle --platform=node --format=cjs --target=es2022 --sourcemap=inline --outfile=out/extension.js --external:vscode extension/main.ts"
+  },
+  "categories": [
+    "Programming Languages"
+  ],
+  "activationEvents": [],
+  "main": "./out/extension.js",
+  "icon": "icon.png",
+  "galleryBanner": {
+    "color": "#61afef",
+    "theme": "light"
+  },
+  "contributes": {
+    "languages": [
+      {
+        "id": "ebnf",
+        "aliases": [
+          "Extended Backus-Naur Form",
+          "ebnf"
+        ],
+        "extensions": [
+          "ebnf"
+        ],
+        "configuration": "./language-configuration.json"
+      }
+    ],
+    "grammars": [
+      {
+        "language": "ebnf",
+        "scopeName": "source.ebnf",
+        "path": "./syntaxes/ebnf.tmLanguage.json"
+      }
+    ]
+  },
+  "configurationDefaults": {
+    "[ebnf]": {
+      "editor.semanticHighlighting.enabled": true
+    }
+  },
+  "dependencies": {
+    "didyoumean": "^1.2.2"
+  },
+  "devDependencies": {
+    "@types/didyoumean": "^1.2.0",
+    "@types/node": "^18.13.0",
+    "@types/vscode": "^1.75.0",
+    "esbuild": "^0.17.6",
+    "typescript": "^4.9.5",
+    "yq": "^0.0.1"
+  },
+  "packageManager": "yarn@1.22.19"
+}
