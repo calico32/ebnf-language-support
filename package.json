@@ -27,8 +27,8 @@
   "main": "./out/extension.js",
   "icon": "icon.png",
   "galleryBanner": {
-    "color": "#61afef",
-    "theme": "light"
+    "color": "#282c34",
+    "theme": "dark"
   },
   "contributes": {
     "languages": [

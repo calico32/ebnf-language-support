@@ -16,4 +16,6 @@ special = "?", ? any character ? - "?", "?" ;
 
 group = "(", expression, ")" ;
 repetition = "{", expression, "}" ;
-alternation = expression, "|", expression ; concatenation = expression, ",", expression ; range = literal, "..", literal ;
+alternation = expression, "|", expression ;
+concatenation = expression, ",", expression ;
+range = literal, "..", literal ;
