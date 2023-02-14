@@ -1,8 +1,8 @@
 {
   "name": "ebnf-language-support",
   "displayName": "EBNF Language Support",
+  "description": "EBNF Language Support for Visual Studio Code",
   "publisher": "devdoge1",
-  "description": "",
   "version": "1.1.2",
   "engines": {
     "vscode": "^1.75.0"
@@ -25,7 +25,7 @@
   ],
   "activationEvents": [],
   "main": "./out/extension.js",
-  "icon": "icon.png",
+  "icon": "./assets/icon.png",
   "galleryBanner": {
     "color": "#282c34",
     "theme": "dark"
