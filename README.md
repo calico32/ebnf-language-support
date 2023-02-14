@@ -2,6 +2,8 @@
 
 This extension adds support for an EBNF-like syntax ([Extended Backus-Naur Form](https://en.wikipedia.org/wiki/Extended_Backus%E2%80%93Naur_form)) to Visual Studio Code.
 
+![Screenshot](./assets/screenshot.png)
+
 ## Table of Contents
 
 - [EBNF Language Support](#ebnf-language-support)
