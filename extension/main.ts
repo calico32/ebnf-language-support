@@ -299,6 +299,10 @@ vscode.languages.registerDocumentSemanticTokensProvider(
         }
 
         if (node instanceof ast.BinaryExpr) {
+          if (node.opPos < 0) {
+            // implicit operator, do nothing
+            return
+          }
           tokens.push(rangeFrom(file, node.opPos, node.opPos + 1), 'operator')
           return
         }
