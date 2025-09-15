@@ -21,7 +21,15 @@ import {
 } from './matchers'
 
 const ebnfGrammar = grammar([
-  rule('grammar', repetition(ident('rule'))),
+  rule('grammar', repetition(alternation(ident('comment'), ident('rule')))),
+  rule(
+    'comment',
+    $many(concatenation, [
+      string('(*'),
+      except(special('? any string ?'), string('*)')),
+      string('*)'),
+    ])
+  ),
   rule(
     'rule',
     $many(concatenation, [
@@ -74,14 +82,14 @@ const ebnfGrammar = grammar([
       group(
         $many(concatenation, [
           string('"'),
-          except(special('? any character ?'), string('"')),
+          except(special('? any string ?'), string('"')),
           string('"'),
         ])
       ),
       group(
         $many(concatenation, [
           string("'"),
-          except(special('? any character ?'), string("'")),
+          except(special('? any string ?'), string("'")),
           string("'"),
         ])
       )
@@ -91,7 +99,7 @@ const ebnfGrammar = grammar([
     'special',
     $many(concatenation, [
       string('?'),
-      except(special('? any character ?'), string('?')),
+      except(special('? any string ?'), string('?')),
       string('?'),
     ])
   ),

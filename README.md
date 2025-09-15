@@ -11,6 +11,7 @@ This extension adds support for an EBNF-like syntax ([Extended Backus-Naur Form]
   - [Features](#features)
   - [Roadmap](#roadmap)
   - [EBNF Syntax](#ebnf-syntax)
+  - [Comments](#comments)
   - [Rules](#rules)
     - [Rule Names](#rule-names)
     - [Expressions](#expressions)
@@ -46,6 +47,10 @@ This extension adds support for an EBNF-like syntax ([Extended Backus-Naur Form]
 ## EBNF Syntax
 
 This extension implements a simple and strict-ish version of EBNF. The syntax is defined in itself in [ebnf.ebnf](./ebnf.ebnf).
+
+## Comments
+
+Comments are defined using the `(*` and `*)` delimiters.
 
 ## Rules
 

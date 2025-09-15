@@ -1,4 +1,8 @@
-grammar = { rule } ;
+(* Grammar for Extended Backus-Naur Form (EBNF) *)
+
+grammar = { comment | rule } ;
+
+comment = "(*", ? any string ? - "*)", "*)" ;
 
 rule = name "=" expression ";" ;
 
@@ -11,8 +15,8 @@ digit = "0".."9" ;
 
 expression = name | literal | special | group | repetition | alternation | concatenation | optional | range ;
 
-literal = ( '"', ? any character ? - '"', '"' ) | ( "'", ? any character ? - "'", "'" ) ;
-special = "?", ? any character ? - "?", "?" ;
+literal = ( '"', ? any string ? - '"', '"' ) | ( "'", ? any string ? - "'", "'" ) ;
+special = "?", ? any string ? - "?", "?" ;
 
 group = "(" expression ")" ;
 repetition = "{" expression "}" ;
