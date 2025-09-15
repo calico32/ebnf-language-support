@@ -93,7 +93,10 @@ export class Scanner {
     }
   }
 
-  lookup(tokens: TokenTree, literal = ''): [tok: Token, lit: string, ok: boolean] {
+  lookup(
+    tokens: TokenTree,
+    literal = ''
+  ): [tok: Token, lit: string, ok: boolean] {
     const ch = this.ch
     literal += ch
 

@@ -10,18 +10,21 @@ type FileStatus = {
   diagnostics: vscode.Diagnostic[]
 }
 
-const visit = (
+function visit(
   node: ast.Node,
   visitor: (node: ast.Node, parent?: ast.Node) => void,
   parent?: ast.Node
-): void => {
+): void {
   visitor(node, parent)
   for (const child of node.children) {
     visit(child, visitor, node)
   }
 }
 
-const getReferences = (grammar: ast.Grammar, ruleName: string): [number, number][] => {
+function getReferences(
+  grammar: ast.Grammar,
+  ruleName: string
+): [number, number][] {
   const refs: [number, number][] = []
 
   visit(grammar, (node) => {
@@ -35,7 +38,7 @@ const getReferences = (grammar: ast.Grammar, ruleName: string): [number, number]
 
 const files = new Map<string, FileStatus>()
 
-const updateFile = (document: vscode.TextDocument): FileStatus => {
+function updateFile(document: vscode.TextDocument): FileStatus {
   const uri = document.uri.toString()
   const fset = new FileSet()
   const parser = new Parser(fset, uri, document.getText())
@@ -46,7 +49,10 @@ const updateFile = (document: vscode.TextDocument): FileStatus => {
     if (node instanceof ast.Ident && !grammar.rules.has(node.name)) {
       const pos = fset.position(node.pos)
       const start = new vscode.Position(pos.line - 1, pos.column - 1)
-      const end = new vscode.Position(pos.line - 1, pos.column - 1 + node.name.length)
+      const end = new vscode.Position(
+        pos.line - 1,
+        pos.column - 1 + node.name.length
+      )
       const range = new vscode.Range(start, end)
       const diagnostic = new vscode.Diagnostic(
         range,
@@ -74,7 +80,11 @@ const updateFile = (document: vscode.TextDocument): FileStatus => {
     const start = new vscode.Position(pos.line - 1, pos.column - 1)
     const end = new vscode.Position(pos.line - 1, pos.column)
     const range = new vscode.Range(start, end)
-    const diagnostic = new vscode.Diagnostic(range, err.msg, vscode.DiagnosticSeverity.Error)
+    const diagnostic = new vscode.Diagnostic(
+      range,
+      err.msg,
+      vscode.DiagnosticSeverity.Error
+    )
     diagnostics.push(diagnostic)
   }
 
@@ -84,7 +94,7 @@ const updateFile = (document: vscode.TextDocument): FileStatus => {
   return { parser, ast: grammar, diagnostics }
 }
 
-const getFile = (document: vscode.TextDocument): FileStatus => {
+function getFile(document: vscode.TextDocument): FileStatus {
   const uri = document.uri.toString()
   if (files.has(uri)) {
     return files.get(uri) as FileStatus
@@ -167,7 +177,9 @@ vscode.languages.registerCompletionItemProvider(ebnf, {
 
     const items: vscode.CompletionItem[] = []
     for (const [name, def] of file.ast.rules) {
-      items.push(new vscode.CompletionItem(name, vscode.CompletionItemKind.Class))
+      items.push(
+        new vscode.CompletionItem(name, vscode.CompletionItemKind.Class)
+      )
     }
     return items
   },
@@ -191,7 +203,9 @@ vscode.languages.registerReferenceProvider(ebnf, {
     const refs = getReferences(file.ast, word)
     const locations: vscode.Location[] = []
     for (const [start, end] of refs) {
-      locations.push(new vscode.Location(document.uri, rangeFrom(file, start, end)))
+      locations.push(
+        new vscode.Location(document.uri, rangeFrom(file, start, end))
+      )
     }
 
     return locations
@@ -253,7 +267,13 @@ vscode.languages.registerDocumentSemanticTokensProvider(
 
         if (node instanceof ast.String) {
           if (!range.isSingleLine) {
-            addMultilineTokens({ file, node, tokens, range, tokenType: 'string' })
+            addMultilineTokens({
+              file,
+              node,
+              tokens,
+              range,
+              tokenType: 'string',
+            })
             return
           }
 
@@ -290,7 +310,7 @@ vscode.languages.registerDocumentSemanticTokensProvider(
   legend
 )
 
-const rangeFrom = (file: FileStatus, pos: number, end: number): vscode.Range => {
+function rangeFrom(file: FileStatus, pos: number, end: number): vscode.Range {
   const position = file.parser.file.position(pos)
   const endPosition = file.parser.file.position(end)
 
@@ -300,13 +320,10 @@ const rangeFrom = (file: FileStatus, pos: number, end: number): vscode.Range => 
   )
 }
 
-// vscode.languages.registerDocumentSemanticTokensProvider(ebnf, {
-//   provideDocumentSemanticTokens(document, token) {
-//     const file = getFile(document)
-//   },
-// })
-
-const calculatePos = ({ parser: { file } }: FileStatus, position: vscode.Position): number => {
+function calculatePos(
+  { parser: { file } }: FileStatus,
+  position: vscode.Position
+): number {
   const line = position.line + 1
   const column = position.character + 1
 
@@ -336,10 +353,16 @@ function addMultilineTokens({
 
   tokens.push(startLine, tokenType, tokenModifiers)
   for (let i = range.start.line + 1; i < range.end.line; i++) {
-    const line = new vscode.Range(new vscode.Position(i, 0), new vscode.Position(i, 1000))
+    const line = new vscode.Range(
+      new vscode.Position(i, 0),
+      new vscode.Position(i, 1000)
+    )
     tokens.push(line, tokenType, tokenModifiers)
   }
-  const endLine = new vscode.Range(new vscode.Position(range.end.line, 0), range.end)
+  const endLine = new vscode.Range(
+    new vscode.Position(range.end.line, 0),
+    range.end
+  )
   tokens.push(endLine, tokenType, tokenModifiers)
 
   return

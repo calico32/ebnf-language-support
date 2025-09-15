@@ -147,7 +147,9 @@ export const stringify = (node: Node): string => {
     if (node.op === Token.Concatenate) {
       return `${stringify(node.left)}, ${stringify(node.right)}`
     }
-    return `${stringify(node.left)} ${toString(node.op)} ${stringify(node.right)}`
+    return `${stringify(node.left)} ${toString(node.op)} ${stringify(
+      node.right
+    )}`
   }
 
   if (node instanceof Grammar) {

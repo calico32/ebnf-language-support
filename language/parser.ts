@@ -1,12 +1,19 @@
 import * as ast from './ast.js'
 import { File, FileSet } from './file.js'
 import { Scanner } from './scanner.js'
-import { Token, isLiteral, isOperator, lowestPrecedence, precedenceOf, toString } from './token.js'
+import {
+  Token,
+  isLiteral,
+  isOperator,
+  lowestPrecedence,
+  precedenceOf,
+  toString,
+} from './token.js'
 
 const doTrace = false
 
 // trace decorator
-const trace = <T>(msg: string): MethodDecorator => {
+function trace(msg: string): MethodDecorator {
   return (target: Object, key: PropertyKey, descriptor: PropertyDescriptor) => {
     if (!doTrace) return descriptor
 
@@ -77,7 +84,8 @@ export class Parser {
   }
 
   printTrace(...a: any[]) {
-    const dots = '. . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . '
+    const dots =
+      '. . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . '
     const n = dots.length
     const pos = this.file.position(this.pos)
     let line = `${pos.line}:${pos.column}: `.padEnd(12)
@@ -154,21 +162,6 @@ export class Parser {
       x = new ast.BinaryExpr(x.pos, x, operator, opPos, y)
     }
   }
-
-  // @trace('PrimaryExpr')
-  // parsePrimaryExpr(x?: ast.Expr): ast.Expr {
-  //   if (!x) {
-  //     x = this.parseOperand()
-  //   }
-
-  //   while (true) {
-  //     switch (this.tok) {
-  //       // TODO: we don't have any of these
-  //       default:
-  //         return x
-  //     }
-  //   }
-  // }
 
   @trace('Operand')
   parseOperand(): ast.Expr {
