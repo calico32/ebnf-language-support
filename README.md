@@ -90,11 +90,13 @@ Ranges have no specific definition of what a range "is". It should be obvious wh
 
 #### Concatenation
 
-The concatenation operator is the comma `,`. It does not define what whitespace is allowed between terms; it is assumed that the reader knows what is and isn't allowed.
+Concatenation can be defined using the comma `,` operator between terms or by juxtaposition of terms.
+
+It does not define what whitespace is allowed between terms; it is assumed that the reader knows what is and isn't allowed.
 
 ```ebnf
 "A", "B", "C" (* probably "ABC" *)
-"fn", name, "()" (* probably "fn foo()" *)
+"fn" name "()" (* probably "fn foo()" *)
 ```
 
 #### Alternation

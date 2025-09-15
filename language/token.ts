@@ -5,6 +5,7 @@ export const enum Token {
   Ident,
   Comment,
   String,
+  Special,
 
   operatorStart,
   Semi,
@@ -13,7 +14,6 @@ export const enum Token {
   Except,
   Range,
   Concatenate,
-  Special,
   operatorEnd,
 
   LBrace,
