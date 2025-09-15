@@ -151,13 +151,36 @@ export class Parser {
     }
 
     while (true) {
-      const operator = this.tok
+      let operator = this.tok
+      let opPos: number | undefined
+      let y: ast.Expr
+      if (!isOperator(operator)) {
+        switch (operator) {
+          case Token.Ident:
+          case Token.String:
+          case Token.Special:
+          case Token.LParen:
+          case Token.LBrace:
+          case Token.LBracket:
+            // potential start of a new expression
+            // try parsing as implicit concatenation
+            operator = Token.Concatenate
+            opPos = -1
+            break
+          default:
+            // fallback to regular binary expression
+            break
+        }
+      }
+
       const opPrecedence = precedenceOf(operator)
       if (opPrecedence < precedence) {
         return x
       }
-      const [opPos] = this.expect(operator)
-      const y = this.parseBinaryExpr(opPrecedence + 1)
+      if (!opPos) {
+        ;[opPos] = this.expect(operator)
+      }
+      y = this.parseBinaryExpr(opPrecedence + 1)
 
       x = new ast.BinaryExpr(x.pos, x, operator, opPos, y)
     }
