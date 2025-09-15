@@ -66,10 +66,19 @@ export class Parser {
       }
     }
 
-    const [pos, tok, lit] = this.scanner.scan()
-    this.pos = pos
-    this.tok = tok
-    this.lit = lit
+    try {
+      const [pos, tok, lit] = this.scanner.scan()
+      this.pos = pos
+      this.tok = tok
+      this.lit = lit
+    } catch (err) {
+      if (err instanceof Error) {
+        this.error(this.scanner.offset, err.message)
+      } else {
+        this.error(this.scanner.offset, String(err))
+      }
+      this.next()
+    }
   }
 
   error(pos: number, msg: string) {
