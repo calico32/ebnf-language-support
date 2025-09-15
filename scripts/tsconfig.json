@@ -1,0 +1,11 @@
+{
+  "extends": "../tsconfig.json",
+  "include": ["**/*.ts"],
+  "exclude": [],
+  "compilerOptions": {
+    "target": "esnext",
+    "module": "esnext",
+    "noEmit": true,
+    "types": ["bun"]
+  }
+}

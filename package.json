@@ -9,15 +9,13 @@
   },
   "repository": {
     "type": "git",
-    "url": "https://github.com/wiisportsresort/ebnf-language-support"
+    "url": "https://github.com/calico32/ebnf-language-support"
   },
   "scripts": {
-    "generate": "yq syntaxes/ebnf.YAML-tmLanguage -o=json -P > syntaxes/ebnf.tmLanguage.json",
-    "watch": "watchexec -w syntaxes -e YAML-tmLanguage -r \"yarn run generate\"",
+    "generate": "cat syntaxes/ebnf.YAML-tmLanguage | yq > syntaxes/ebnf.tmLanguage.json",
+    "watch": "watchexec -w syntaxes -e YAML-tmLanguage -r \"bun generate\"",
     "build": "vsce package",
-    "vscode:prepublish": "yarn run generate && yarn run compile",
-    "build-script": "esbuild --bundle --platform=node --format=esm --target=es2022 --sourcemap=inline --outfile=script.mjs",
-    "script": "yarn build-script $0 2>/dev/null && node --enable-source-maps script.mjs $*",
+    "vscode:prepublish": "bun generate && bun compile",
     "compile": "esbuild --bundle --platform=node --format=cjs --target=es2022 --sourcemap=inline --outfile=out/extension.js --external:vscode extension/main.ts"
   },
   "categories": [
@@ -61,12 +59,12 @@
     "didyoumean": "^1.2.2"
   },
   "devDependencies": {
+    "@types/bun": "^1.2.21",
     "@types/didyoumean": "^1.2.0",
-    "@types/node": "^18.13.0",
+    "@types/node": "^24.4.0",
     "@types/vscode": "^1.75.0",
-    "esbuild": "^0.17.6",
-    "typescript": "^4.9.5",
+    "esbuild": "^0.25.9",
+    "typescript": "^5.9.2",
     "yq": "^0.0.1"
-  },
-  "packageManager": "yarn@1.22.19"
+  }
 }

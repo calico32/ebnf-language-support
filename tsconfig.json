@@ -1,13 +1,16 @@
 {
+  "exclude": ["test", "scripts"],
   "compilerOptions": {
     "target": "esnext",
     "module": "esnext",
     "strict": true,
     "experimentalDecorators": true,
     "skipLibCheck": true,
-    "moduleResolution": "nodenext",
+    "moduleResolution": "bundler",
     "lib": ["esnext"],
     "allowSyntheticDefaultImports": true,
-    "esModuleInterop": true
+    "esModuleInterop": true,
+    "typeRoots": ["./node_modules/@types"],
+    "types": ["node"]
   }
 }
