@@ -9,7 +9,7 @@ name_character = name_start_character | "-" ;
 letter = "a".."z" | "A".."Z" ;
 digit = "0".."9" ;
 
-expression = name | literal | special | group | repetition | alternation | concatenation | range ;
+expression = name | literal | special | group | repetition | alternation | concatenation | optional | range ;
 
 literal = ( '"', ? any character ? - '"', '"' ) | ( "'", ? any character ? - "'", "'" ) ;
 special = "?", ? any character ? - "?", "?" ;
@@ -17,5 +17,6 @@ special = "?", ? any character ? - "?", "?" ;
 group = "(", expression, ")" ;
 repetition = "{", expression, "}" ;
 alternation = expression, "|", expression ;
-concatenation = expression, ",", expression ;
+concatenation = expression, [ "," ], expression ;
+optional = "[", expression, "]" ;
 range = literal, "..", literal ;
