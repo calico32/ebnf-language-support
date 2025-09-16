@@ -228,3 +228,50 @@ export function except(leftMatcher: Matcher, rightMatcher: Matcher): Matcher {
   })
   return f
 }
+
+export function unaryExpr(op: token.Token, exprMatcher: Matcher): Matcher {
+  const f = (expr: ast.Expr) => {
+    expect(expr).toBeInstanceOf(ast.UnaryExpr)
+    expect((expr as ast.UnaryExpr).op).toBe(op)
+    exprMatcher((expr as ast.UnaryExpr).expr)
+  }
+  Object.defineProperty(f, 'name', {
+    value: `matchUnaryExpr(op="${token.toString(op)}")`,
+    writable: true,
+  })
+  Object.defineProperty(f, internal, {
+    value: {
+      type: 'unaryExpr',
+      op,
+      expr: $serialize(exprMatcher),
+    },
+    writable: true,
+  })
+  return f
+}
+
+export function oneOrMorePlus(exprMatcher: Matcher): Matcher {
+  const f = unaryExpr(token.Token.OneOrMore, exprMatcher)
+  Object.defineProperty(f, 'name', { value: 'matchOneOrMore(plus)' })
+  Object.defineProperty(f, internal, {
+    value: {
+      type: 'oneOrMore',
+      expr: $serialize(exprMatcher),
+    },
+    writable: false,
+  })
+  return f
+}
+
+export function oneOrMoreMinus(exprMatcher: Matcher): Matcher {
+  const f = unaryExpr(token.Token.Except, exprMatcher)
+  Object.defineProperty(f, 'name', { value: 'matchOneOrMore(minus)' })
+  Object.defineProperty(f, internal, {
+    value: {
+      type: 'oneOrMore',
+      expr: $serialize(exprMatcher),
+    },
+    writable: false,
+  })
+  return f
+}

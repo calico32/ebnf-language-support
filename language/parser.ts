@@ -3,10 +3,12 @@ import { File, FileSet } from './file.js'
 import { Scanner } from './scanner.js'
 import {
   Token,
+  canStartExpression,
+  infixPrecedence,
   isLiteral,
   isOperator,
   lowestPrecedence,
-  precedenceOf,
+  postfixPrecedence,
   toString,
 } from './token.js'
 
@@ -149,49 +151,56 @@ export class Parser {
   }
 
   @trace('Expr')
-  parseExpr(): ast.Expr {
-    return this.parseBinaryExpr(lowestPrecedence + 1)
-  }
-
-  @trace('BinaryExpr')
-  parseBinaryExpr(precedence: number, x?: ast.Expr): ast.Expr {
-    if (!x) {
-      x = this.parseOperand()
+  parseExpr(
+    minPrecedence: number = lowestPrecedence + 1,
+    lhs?: ast.Expr
+  ): ast.Expr {
+    if (!lhs) {
+      lhs = this.parseOperand()
     }
 
     while (true) {
       let operator = this.tok
       let opPos: number | undefined
-      let y: ast.Expr
-      if (!isOperator(operator)) {
-        switch (operator) {
-          case Token.Ident:
-          case Token.String:
-          case Token.Special:
-          case Token.LParen:
-          case Token.LBrace:
-          case Token.LBracket:
-            // potential start of a new expression
-            // try parsing as implicit concatenation
-            operator = Token.Concatenate
-            opPos = -1
-            break
-          default:
-            // fallback to regular binary expression
-            break
+      let rhs: ast.Expr
+
+      if (canStartExpression(operator)) {
+        // potential start of a new expression
+        // try parsing as implicit concatenation
+        operator = Token.Concatenate
+        opPos = -1
+      }
+
+      const postfixPrec = postfixPrecedence(operator)
+      if (postfixPrec >= minPrecedence) {
+        if (!opPos) {
+          // consume the operator
+          opPos = this.expect(operator)[0]
+        }
+
+        // there is a following expression, we'll treat it as infix
+        if (operator == Token.Except && canStartExpression(this.tok)) {
+          // fall through to next case
+        } else {
+          lhs = new ast.UnaryExpr(lhs.pos, lhs, operator, opPos)
+          continue
         }
       }
 
-      const opPrecedence = precedenceOf(operator)
-      if (opPrecedence < precedence) {
-        return x
-      }
-      if (!opPos) {
-        ;[opPos] = this.expect(operator)
-      }
-      y = this.parseBinaryExpr(opPrecedence + 1)
+      const infixPrec = infixPrecedence(operator)
+      if (infixPrec >= minPrecedence) {
+        if (!opPos) {
+          // consume the operator
+          opPos = this.expect(operator)[0]
+        }
 
-      x = new ast.BinaryExpr(x.pos, x, operator, opPos, y)
+        rhs = this.parseExpr(infixPrec + 1)
+        lhs = new ast.BinaryExpr(lhs.pos, lhs, operator, opPos, rhs)
+        continue
+      }
+
+      // nothing left to do
+      return lhs
     }
   }
 
