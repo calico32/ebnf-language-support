@@ -30,6 +30,7 @@ const tokenTree = tokens({
   '=': Token.Assign,
   '|': Token.Alternate,
   '-': Token.Except,
+  '+': Token.OneOrMore,
   '.': tokens({
     '.': Token.Range,
   }),

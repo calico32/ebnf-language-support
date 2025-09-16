@@ -79,6 +79,21 @@ export class Optional extends Expr {
   }
 }
 
+export class UnaryExpr extends Expr {
+  constructor(
+    pos: number,
+    public readonly expr: Expr,
+    public readonly op: Token,
+    public readonly opPos: number
+  ) {
+    super(pos, expr.end)
+  }
+
+  get children(): Expr[] {
+    return [this.expr]
+  }
+}
+
 export class BinaryExpr extends Expr {
   constructor(
     pos: number,

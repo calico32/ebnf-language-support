@@ -15,7 +15,8 @@ digit = "0".."9" ;
 
 expression = name | literal | special
     | group | repetition | optional
-    | alternation | concatenation | range | except ;
+    | alternation | concatenation | range | except
+    | one-or-more ;
 
 literal = ( '"', ? any string ? - '"', '"' ) | ( "'", ? any string ? - "'", "'" ) ;
 special = "?", ? any string ? - "?", "?" ;
@@ -27,3 +28,4 @@ alternation   = expression, "|", expression ;
 concatenation = expression, [","], expression ;
 range         = expression, "..", expression ;
 except        = expression, "-", expression ;
+one-or-more   = ( expression, "+" ) | ( expression, "-" ) ;

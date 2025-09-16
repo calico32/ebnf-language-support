@@ -69,6 +69,7 @@ export const ebnfGrammar = grammar([
       ident('concatenation'),
       ident('range'),
       ident('except'),
+      ident('one-or-more'),
     ])
   ),
   rule(
@@ -142,5 +143,12 @@ export const ebnfGrammar = grammar([
       string('-'),
       ident('expression'),
     ])
+  ),
+  rule(
+    'one-or-more',
+    alternation(
+      group(concatenation(ident('expression'), string('+'))),
+      group(concatenation(ident('expression'), string('-')))
+    )
   ),
 ])

@@ -1,11 +1,20 @@
 export const enum Token {
   Illegal,
   EOF,
-
-  Ident,
   Comment,
+
+  expressionStart,
+  Ident,
   String,
   Special,
+  LBrace,
+  LParen,
+  LBracket,
+  expressionEnd,
+
+  RBrace,
+  RParen,
+  RBracket,
 
   operatorStart,
   Semi,
@@ -14,14 +23,8 @@ export const enum Token {
   Except,
   Range,
   Concatenate,
+  OneOrMore,
   operatorEnd,
-
-  LBrace,
-  RBrace,
-  LParen,
-  RParen,
-  LBracket,
-  RBracket,
 }
 
 export const toString = (token: Token): string => {
@@ -38,6 +41,7 @@ export const toString = (token: Token): string => {
     [Token.Except]: '-',
     [Token.Range]: '..',
     [Token.Concatenate]: ',',
+    [Token.OneOrMore]: '+',
     [Token.LBrace]: '{',
     [Token.RBrace]: '}',
     [Token.LParen]: '(',
@@ -49,15 +53,19 @@ export const toString = (token: Token): string => {
   return tokenNames[token] || `token(${token})`
 }
 
-export const isLiteral = (token: Token): boolean => {
+export function isLiteral(token: Token): boolean {
   return token === Token.String
 }
 
-export const isOperator = (token: Token): boolean => {
+export function isOperator(token: Token): boolean {
   return token >= Token.operatorStart && token <= Token.operatorEnd
 }
 
-export const precedenceOf = (token: Token): number => {
+export function canStartExpression(token: Token): boolean {
+  return token >= Token.expressionStart && token <= Token.expressionEnd
+}
+
+export function infixPrecedence(token: Token): number {
   switch (token) {
     case Token.Alternate:
       return 1
@@ -65,7 +73,18 @@ export const precedenceOf = (token: Token): number => {
       return 2
     case Token.Except:
       return 3
+    // postfix OneOrMore 4
     case Token.Range:
+      return 5
+    default:
+      return lowestPrecedence
+  }
+}
+
+export function postfixPrecedence(token: Token): number {
+  switch (token) {
+    case Token.Except: // postfix as one or more
+    case Token.OneOrMore:
       return 4
     default:
       return lowestPrecedence
@@ -73,4 +92,3 @@ export const precedenceOf = (token: Token): number => {
 }
 
 export const lowestPrecedence = 0
-export const highestPrecedence = 4
