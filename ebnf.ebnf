@@ -6,21 +6,24 @@ comment = "(*", ? any string ? - "*)", "*)" ;
 
 rule = name, "=", expression, ";" ;
 
-name = name_start_character, { name_character } ;
+name = name-start-character, { name-character } ;
 
-name_start_character = letter | digit | "_" ;
-name_character = name_start_character | "-" ;
+name-start-character = letter | digit | "_" ;
+name-character = name-start-character | "-" ;
 letter = "a".."z" | "A".."Z" ;
 digit = "0".."9" ;
 
-expression = name | literal | special | group | repetition | alternation | concatenation | optional | range ;
+expression = name | literal | special
+    | group | repetition | optional
+    | alternation | concatenation | range | except ;
 
 literal = ( '"', ? any string ? - '"', '"' ) | ( "'", ? any string ? - "'", "'" ) ;
 special = "?", ? any string ? - "?", "?" ;
 
-group = "(", expression, ")" ;
-repetition = "{", expression, "}" ;
-alternation = expression, "|", expression ;
-concatenation = expression, [ "," ], expression ;
-optional = "[", expression, "]" ;
-range = literal, "..", literal ;
+group         = "(", expression, ")" ;
+repetition    = "{", expression, "}" ;
+optional      = "[", expression, "]" ;
+alternation   = expression, "|", expression ;
+concatenation = expression, [","], expression ;
+range         = expression, "..", expression ;
+except        = expression, "-", expression ;
