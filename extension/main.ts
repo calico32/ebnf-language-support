@@ -155,9 +155,9 @@ vscode.languages.registerDocumentSymbolProvider(ebnf, {
     const file = getFile(document)
 
     const symbols: vscode.SymbolInformation[] = []
-    for (const [name, def] of file.ast.rules) {
-      const pos = file.parser.file.position(def.name.pos)
-      const end = file.parser.file.position(def.name.end)
+    for (const [name, rule] of file.ast.rules) {
+      const pos = file.parser.file.position(rule.pos)
+      const end = file.parser.file.position(rule.end)
       const posStart = new vscode.Position(pos.line - 1, pos.column - 1)
       const posEnd = new vscode.Position(end.line - 1, end.column - 1)
       symbols.push(
