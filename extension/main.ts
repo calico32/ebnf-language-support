@@ -45,6 +45,20 @@ function updateFile(document: vscode.TextDocument): FileStatus {
   const grammar = parser.parseGrammar()
   const diagnostics: vscode.Diagnostic[] = []
 
+  for (const err of parser.errors) {
+    const pos = fset.position(err.pos)
+    const start = new vscode.Position(pos.line - 1, pos.column - 1)
+    const end = new vscode.Position(pos.line - 1, pos.column)
+    const range = new vscode.Range(start, end)
+    const diagnostic = new vscode.Diagnostic(
+      range,
+      err.msg,
+      vscode.DiagnosticSeverity.Error
+    )
+    diagnostic.source = 'ebnf'
+    diagnostics.push(diagnostic)
+  }
+
   visit(grammar, (node) => {
     if (node instanceof ast.Ident && !grammar.rules.has(node.name)) {
       const pos = fset.position(node.pos)
@@ -59,6 +73,7 @@ function updateFile(document: vscode.TextDocument): FileStatus {
         `Undefined rule: ${node.name}`,
         vscode.DiagnosticSeverity.Error
       )
+      diagnostic.source = 'ebnf'
 
       const similar = didYouMean(node.name, [...grammar.rules.keys()])
 
@@ -74,19 +89,6 @@ function updateFile(document: vscode.TextDocument): FileStatus {
       diagnostics.push(diagnostic)
     }
   })
-
-  for (const err of parser.errors) {
-    const pos = fset.position(err.pos)
-    const start = new vscode.Position(pos.line - 1, pos.column - 1)
-    const end = new vscode.Position(pos.line - 1, pos.column)
-    const range = new vscode.Range(start, end)
-    const diagnostic = new vscode.Diagnostic(
-      range,
-      err.msg,
-      vscode.DiagnosticSeverity.Error
-    )
-    diagnostics.push(diagnostic)
-  }
 
   diagnosticCollection.set(document.uri, diagnostics)
 
