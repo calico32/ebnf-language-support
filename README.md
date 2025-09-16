@@ -14,15 +14,15 @@ This extension adds support for an EBNF-like syntax ([Extended Backus-Naur Form]
   - [Comments](#comments)
   - [Rules](#rules)
     - [Rule Names](#rule-names)
-    - [Expressions](#expressions)
-      - [Literals](#literals)
-      - [Special Cases](#special-cases)
-      - [Groups](#groups)
-      - [Ranges](#ranges)
-    - [Operators](#operators)
-      - [Concatenation](#concatenation)
-      - [Alternation](#alternation)
-      - [Exclusion](#exclusion)
+  - [Expressions](#expressions)
+    - [Literals](#literals)
+    - [Special Cases](#special-cases)
+    - [Groups](#groups)
+    - [Ranges](#ranges)
+    - [Concatenation](#concatenation)
+    - [Alternation](#alternation)
+    - [Exclusion](#exclusion)
+    - ["One or more"](#one-or-more)
 
 ## Features
 
@@ -48,6 +48,8 @@ This extension adds support for an EBNF-like syntax ([Extended Backus-Naur Form]
 
 This extension implements a simple and strict-ish version of EBNF. The syntax is defined in itself in [ebnf.ebnf](./ebnf.ebnf).
 
+The dialect implemented mostly follows the [ISO/IEC 14977](https://www.iso.org/standard/81671.html) standard, with some extensions for clarity and convenience.
+
 ## Comments
 
 Comments are defined using the `(*` and `*)` delimiters.
@@ -60,15 +62,15 @@ Rules are defined using the assignment operator `=`. The left-hand side is the r
 
 Rule names can start with any letter, number, or an underscore. They can also contain a hyphen, but not at the beginning. Rule names are case-sensitive.
 
-### Expressions
+## Expressions
 
 Expressions are made up of _terms_ and _operators_. Terms are either literals, references to other rules (by name), special cases, groups, or ranges. Operators are used to combine terms into more complex expressions.
 
-#### Literals
+### Literals
 
 Literals are enclosed in single quotes or double quotes. They can contain any character except for the quote character used to enclose them. No escaping is considered, so you can't use a single quote inside a single-quoted literal, or a double quote inside a double-quoted literal. How to interpret sequences like `\n` is up to the reader. Both literals and special cases can be multiline.
 
-#### Special Cases
+### Special Cases
 
 Special cases are used to describe content that cannot be easily expressed using the other terms. They are enclosed in question marks `?`, and can have multiple lines.
 
@@ -77,7 +79,7 @@ Special cases are used to describe content that cannot be easily expressed using
 ? valid UTF-8 ?
 ```
 
-#### Groups
+### Groups
 
 There are three different types of groups:
 
@@ -85,15 +87,13 @@ There are three different types of groups:
 - Brackets (_optional_) indicate that the content inside is optional, i.e. it can appear zero or one times.
 - Braces (_repetition_) indicate that the content inside can appear zero or more times.
 
-#### Ranges
+### Ranges
 
 Ranges are used to define a set a contiguous characters. They are composed of two strings joined by two dots `..`.
 
 Ranges have no specific definition of what a range "is". It should be obvious what the range should represent. For example, a range of `"A".."Z"` is probably a set of uppercase letters, while a range of `"0".."9"` is probably a set of digits.
 
-### Operators
-
-#### Concatenation
+### Concatenation
 
 Concatenation can be defined using the comma `,` operator between terms or by juxtaposition of terms.
 
@@ -104,7 +104,7 @@ It does not define what whitespace is allowed between terms; it is assumed that 
 "fn" name "()" (* probably "fn foo()" *)
 ```
 
-#### Alternation
+### Alternation
 
 The alternation operator is the pipe `|`. It is used to define a set of possible choices for a term.
 
@@ -113,7 +113,7 @@ The alternation operator is the pipe `|`. It is used to define a set of possible
 "A", ( "B" | "C" ) (* "AB" or "AC" *)
 ```
 
-#### Exclusion
+### Exclusion
 
 The exclusion operator is the caret `-`. It is used to define a set of possible choices for a term, but excludes one or more of them.
 
@@ -121,3 +121,28 @@ The exclusion operator is the caret `-`. It is used to define a set of possible 
 letter = "A".."Z" ;
 not_z = letter - "Z" ; (* "A".."Y" *)
 ```
+
+### "One or more"
+
+The postfix operators `+` and `-` modify the preceding term to indicate that it occurs "one or more" times. The following forms are equivalent:
+
+```ebnf
+many-as = { "a" }+ ; (* "a", "aa", "aaa", ... but not "" *)
+many-as = { "a" }- ;
+many-as = { "a" } - '' ;
+```
+
+> [!NOTE]
+>
+> The `-` operator is also valid as an infix oerator (see
+> [Exclusion](#exclusion)). Thus, when another term follows a unary `-`, it will
+> be interpreted as an exclusion instead of a concatenation. Adding a comma
+> directly after a unary `-` can be used to disambiguate this case, but can
+> be confusing and error-prone:
+>
+> ```ebnf
+> ooof = { "o" }-, "f" ;
+> ```
+>
+> Usage of `-` as a postfix operator is therefore discouraged. Using `+`, although
+> not part of ISO/IEC 14977, is recommended instead.
