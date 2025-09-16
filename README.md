@@ -48,7 +48,7 @@ This extension adds support for an EBNF-like syntax ([Extended Backus-Naur Form]
 
 This extension implements a simple and strict-ish version of EBNF. The syntax is defined in itself in [ebnf.ebnf](./ebnf.ebnf).
 
-The dialect implemented mostly follows the [ISO/IEC 14977](https://www.iso.org/standard/81671.html) standard, with some extensions for clarity and convenience.
+The dialect implemented mostly follows the [ISO/IEC 14977](https://www.iso.org/standard/26153.html) standard, with some extensions for clarity and convenience.
 
 ## Comments
 
