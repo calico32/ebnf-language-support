@@ -123,7 +123,7 @@ export class Parser {
     const pos = this.pos
     const ok = this.tok === tok
     if (!ok) {
-      this.error(pos, `expected ${toString(tok)}, got ${toString(this.tok)}`)
+      this.error(pos, `Expected ${toString(tok)}, got ${toString(this.tok)}`)
     }
     this.next()
     return [pos, ok]
@@ -220,7 +220,7 @@ export class Parser {
       case Token.LBracket:
         return this.parseOptional()
       default:
-        this.error(this.pos, `unexpected token: ${toString(this.tok)}`)
+        this.error(this.pos, `Unexpected token: ${toString(this.tok)}`)
         this.next()
         return new ast.BadExpr(this.pos)
     }
@@ -280,10 +280,10 @@ export class Parser {
 
       if (rule) {
         if (names.has(rule.name.name)) {
-          this.error(rule.name.pos, `duplicate rule name: ${rule.name.name}`)
+          this.error(rule.name.pos, `Duplicate rule name: ${rule.name.name}`)
           this.error(
             rules.find((r) => r.name.name === rule.name.name)!.name.pos,
-            `duplicate rule name: ${rule.name.name}`
+            `Duplicate rule name: ${rule.name.name}`
           )
         }
 
