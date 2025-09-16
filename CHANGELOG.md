@@ -1,6 +1,11 @@
-# Change Log
+# Changelog
 
 All notable changes to the "enbf-language-support" extension will be documented in this file.
+
+## 1.3.0
+
+- Add postfix `+` and `-` operators for "one or more"
+- Improve LSP completion and symbol information
 
 ## 1.2.1
 
