@@ -178,10 +178,15 @@ vscode.languages.registerCompletionItemProvider(ebnf, {
     const file = getFile(document)
 
     const items: vscode.CompletionItem[] = []
-    for (const [name, def] of file.ast.rules) {
-      items.push(
-        new vscode.CompletionItem(name, vscode.CompletionItemKind.Class)
+    for (const [name, rule] of file.ast.rules) {
+      const item = new vscode.CompletionItem(
+        {
+          label: name,
+          detail: ' = ' + ast.stringify(rule.value),
+        },
+        vscode.CompletionItemKind.Class
       )
+      items.push(item)
     }
     return items
   },
